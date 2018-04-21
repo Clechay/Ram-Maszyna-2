@@ -1,41 +1,27 @@
 class Ribbon {
-	private list: number[];
-	private counter: number;
-	constructor(array: number) {
-		this.list = Object.assign([], array);
-		this.counter = 0;
+	data_sequence : number[];
+	next_id : number;
+	move() : void{}
+	get_previous() : number[]{
+		return [];
 	}
-	/**
-	 * get_list
-	 */
-	public get_list():number[]{
-		let temp = Object.assign([], this.list);
-		return temp;
+	get_current() : number{
+		return 0;
 	}
-	/**
-	 * get_counter
-	 */
-	public get_counter():number{
-		return this.counter;
+	get_following() : number[]{
+		return [];
 	}
-	/**
-	 * get_next
-	 */
-	public get_next():number{
-		return this.list [this.counter];
+}
+class InputRibbon extends Ribbon {
+	read() : number{
+		return 0;
 	}
-	/**
-	 * take
-	 */
-	public take():number{
-		this.counter--;
-		return this.list[this.counter - 1];
+	readAndMove() : number{
+		return 0;
 	}
-	/**
-	 * push
-	 */
-	public push():number{
-		this.counter++;
-		return this.list[this.counter - 1];
-	}
+}
+
+class OutputRibbon extends Ribbon{
+	write() : void{}
+	writeAndMove() : void{}
 }

@@ -1,27 +1,42 @@
-class Ribbon {
-	data_sequence : number[];
-	next_id : number;
-	move() : void{}
-	get_previous() : number[]{
-		return [];
-	}
-	get_current() : number{
-		return 0;
-	}
-	get_following() : number[]{
-		return [];
-	}
-}
-class InputRibbon extends Ribbon {
-	read() : number{
-		return 0;
-	}
-	readAndMove() : number{
-		return 0;
-	}
+import { error } from 'util';
+
+export class Ribbon {
+    dataSequence: number[];
+    nextId: number;
+
+    move(): void {
+        error('not implemented');
+    }
+
+    getPrevious(): number[] {
+        return [];
+    }
+
+    getCurrent(): number {
+        return 0;
+    }
+
+    getFollowing(): number[] {
+        return [];
+    }
 }
 
-class OutputRibbon extends Ribbon{
-	write() : void{}
-	writeAndMove() : void{}
+export class InputRibbon extends Ribbon {
+    read(): number {
+        return 0;
+    }
+
+    readAndMove(): number {
+        return 0;
+    }
+}
+
+export class OutputRibbon extends Ribbon {
+    write(): void {
+        error('not implemented');
+    }
+
+    writeAndMove(): void {
+        error('not implemented');
+    }
 }

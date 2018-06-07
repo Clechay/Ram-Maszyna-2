@@ -1,14 +1,21 @@
-class DataToken {
-	type : string;
-	value : number;
+export enum DataTokenType {
+    NUMBER,
+    ADDRESS_TO_NUMBER,
+    ADDRESS_TO_ADDRESS,
+    LABEL
 }
 
-class Command {
-	command_id : string;
-	args : DataToken[];
+export class DataToken {
+    type: DataTokenType;
+    value: string;
 }
 
-class Firmware{
-	map : Map<string, number>;
-	commands : Command[];
+export class Command {
+    commandId: string;
+    arg: DataToken;
+}
+
+export class Firmware {
+    map: Map<string, number>;
+    commands: Command[];
 }

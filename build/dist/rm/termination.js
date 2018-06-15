@@ -21,9 +21,9 @@ var TerminationRule = /** @class */ (function () {
 exports.TerminationRule = TerminationRule;
 var TerminateAtLine = /** @class */ (function (_super) {
     __extends(TerminateAtLine, _super);
-    function TerminateAtLine(line_number) {
+    function TerminateAtLine(lineNumber) {
         var _this = _super.call(this) || this;
-        _this.nr = line_number;
+        _this.nr = lineNumber;
         return _this;
     }
     TerminateAtLine.prototype.check = function (state, firmware) {

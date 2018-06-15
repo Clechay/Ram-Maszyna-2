@@ -10,35 +10,50 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = require("util");
 var Ribbon = /** @class */ (function () {
     function Ribbon() {
+        this.nextId = 0;
+        this.dataSequence = [];
     }
     Ribbon.prototype.move = function () {
-        util_1.error('not implemented');
+        this.nextId++;
     };
     Ribbon.prototype.getPrevious = function () {
-        return [];
+        var result = [];
+        for (var i = 0; i < this.nextId; i++) {
+            result.push(this.dataSequence[i]);
+        }
+        return result;
     };
     Ribbon.prototype.getCurrent = function () {
-        return 0;
+        return this.dataSequence[this.nextId];
     };
     Ribbon.prototype.getFollowing = function () {
-        return [];
+        var result = [];
+        for (var i = this.nextId + 1; i < this.dataSequence.length; i++) {
+            result.push(this.dataSequence[i]);
+        }
+        return result;
+    };
+    Ribbon.prototype.getEntire = function () {
+        return Object.assign([], this.dataSequence);
     };
     return Ribbon;
 }());
 exports.Ribbon = Ribbon;
 var InputRibbon = /** @class */ (function (_super) {
     __extends(InputRibbon, _super);
-    function InputRibbon() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function InputRibbon(arr) {
+        var _this = _super.call(this) || this;
+        _this.dataSequence = Object.assign([], arr);
+        return _this;
     }
     InputRibbon.prototype.read = function () {
-        return 0;
+        return this.dataSequence[this.nextId];
     };
     InputRibbon.prototype.readAndMove = function () {
-        return 0;
+        this.nextId++;
+        return this.dataSequence[this.nextId - 1];
     };
     return InputRibbon;
 }(Ribbon));
@@ -46,13 +61,16 @@ exports.InputRibbon = InputRibbon;
 var OutputRibbon = /** @class */ (function (_super) {
     __extends(OutputRibbon, _super);
     function OutputRibbon() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super.call(this) || this;
+        _this.dataSequence = [];
+        return _this;
     }
-    OutputRibbon.prototype.write = function () {
-        util_1.error('not implemented');
+    OutputRibbon.prototype.write = function (val) {
+        this.dataSequence[this.nextId] = val;
     };
-    OutputRibbon.prototype.writeAndMove = function () {
-        util_1.error('not implemented');
+    OutputRibbon.prototype.writeAndMove = function (val) {
+        this.write(val);
+        this.move();
     };
     return OutputRibbon;
 }(Ribbon));

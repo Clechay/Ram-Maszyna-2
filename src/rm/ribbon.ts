@@ -1,42 +1,69 @@
-import { error } from 'util';
-
 export class Ribbon {
-    dataSequence: number[];
-    nextId: number;
+    protected dataSequence: number[];
+    protected nextId: number;
+
+    protected constructor() {
+        this.nextId = 0;
+        this.dataSequence = [];
+    }
 
     move(): void {
-        error('not implemented');
+        this.nextId++;
     }
 
     getPrevious(): number[] {
-        return [];
+        let result: number[] = [];
+        for (let i = 0; i < this.nextId; i++) {
+            result.push(this.dataSequence[i]);
+        }
+        return result;
     }
 
     getCurrent(): number {
-        return 0;
+        return this.dataSequence[this.nextId];
     }
 
     getFollowing(): number[] {
-        return [];
+        let result: number[] = [];
+        for (let i = this.nextId + 1; i < this.dataSequence.length; i++) {
+            result.push(this.dataSequence[i]);
+        }
+        return result;
+    }
+
+    getEntire(): number[] {
+        return Object.assign([], this.dataSequence);
     }
 }
 
 export class InputRibbon extends Ribbon {
+    constructor(arr: number[]) {
+        super();
+        this.dataSequence = Object.assign([], arr);
+    }
+
     read(): number {
-        return 0;
+        return this.dataSequence[this.nextId];
     }
 
     readAndMove(): number {
-        return 0;
+        this.nextId++;
+        return this.dataSequence[this.nextId - 1];
     }
 }
 
 export class OutputRibbon extends Ribbon {
-    write(): void {
-        error('not implemented');
+    constructor() {
+        super();
+        this.dataSequence = [];
     }
 
-    writeAndMove(): void {
-        error('not implemented');
+    write(val: number): void {
+        this.dataSequence[this.nextId] = val;
+    }
+
+    writeAndMove(val: number): void {
+        this.write(val);
+        this.move();
     }
 }

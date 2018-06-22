@@ -3,96 +3,41 @@ import { State } from './state';
 import { Terminator } from './termination';
 
 export class Executor {
-    allowedArgs: DataTokenType[];
+    name: string;
+    handlers: Map <DataTokenType,(prev: State, arg: DataToken)=>State>;
 
-    perform(prev: State, arg: DataToken): State {
-        return prev;
+    doable(argT: DataTokenType): boolean {
+        return this.handlers.has(argT);
     }
 
     exec(prev: State, arg: DataToken): State {
-        if (!this.allowedArgs.includes(arg.type)) {
+        if (!this.doable(arg.type)) {
             throw 'illegal argument type';
         }
-        return this.perform(prev, arg);
+        return this.handlers.get(arg.type)(prev, arg);
     }
 
-    constructor(func: { (prev: State, arg: DataToken): State }) {
-        console.warn('not ready');
+    constructor(name: string) {
+        this.name = name;
+        this.handlers = new Map<DataTokenType, (prev: State, arg: DataToken)=>State>();
     }
 }
+
+let executors: Executor[];
+let ex = new Executor("TEST");
+ex.handlers.set(DataTokenType.NULL, (prev, arg) => {
+    prev.mem.set(42,1337);
+    return prev;});
+
 
 export class Engine {
     executors: Map<string, Executor>;
 
     constructor() {
-        this.executors = new Map([
-            [
-                'ADD',
-                new Executor(function (prev: State, arg: DataToken): State {
-                    if (arg.value === '') {
-                        throw 'ADD: MISSING ARGUMENT';
-                    }
-                    switch (arg.type) {
-                        case DataTokenType.LABEL:
-                            throw 'ADD: ILLEGAL ARGUMENT \'label\'';
-                        case DataTokenType.NUMBER:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) + Number(arg.value)
-                            );
-                            break;
-                        case DataTokenType.ADDRESS_TO_NUMBER:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) + prev.mem.get(Number(arg.value))
-                            );
-                            break;
-                        case DataTokenType.ADDRESS_TO_ADDRESS:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) + prev.mem.get(prev.mem.get(Number(arg.value)))
-                            );
-                            break;
-                        default:
-                            throw 'ADD: ILLEGAL ARGUMENT \'' + arg.type + '\'';
-                    }
-                    prev.commandCounter++;
-                    return prev;
-                })],
-            [
-                'SUB',
-                new Executor(function (prev: State, arg: DataToken): State {
-                    if (arg.value === '') {
-                        throw 'ADD: MISSING ARGUMENT';
-                    }
-                    switch (arg.type) {
-                        case DataTokenType.LABEL:
-                            throw 'ADD: ILLEGAL ARGUMENT \'label\'';
-                        case DataTokenType.NUMBER:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) - Number(arg.value)
-                            );
-                            break;
-                        case DataTokenType.ADDRESS_TO_NUMBER:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) - prev.mem.get(Number(arg.value))
-                            );
-                            break;
-                        case DataTokenType.ADDRESS_TO_ADDRESS:
-                            prev.mem.set(
-                                0,
-                                prev.mem.get(0) - prev.mem.get(prev.mem.get(Number(arg.value)))
-                            );
-                            break;
-                        default:
-                            throw 'ADD: ILLEGAL ARGUMENT \'' + arg.type + '\'';
-                    }
-                    prev.commandCounter++;
-                    return prev;
-                })]
-        ]);
+        this.executors = new Map<string, Executor>();
+        executors.forEach((value, index, array) => {
+            this.executors.set(value.name,value);
+        })
     }
 
     step(prev: State, firmware: Firmware): State {
@@ -108,10 +53,12 @@ export class Engine {
     }
 
     execute(prev: State, firmware: Firmware): State {
-        return prev;
+        while(firmware.commands[prev.commandCounter].commandId != "HALT")
+            prev = this.step(prev,firmware);
     }
 
     debug(prev: State, firmware: Firmware, term: Terminator): State {
+        throw "not ready";
         return prev;
     }
 }

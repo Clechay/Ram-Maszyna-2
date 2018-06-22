@@ -1,6 +1,10 @@
 export class Memmory {
     cells: number[];
 
+    constructor(){
+        this.cells = [];
+    }
+
     set(id: number, value: number): void {
         this.cells[id] = value;
     }
@@ -13,6 +17,6 @@ export class Memmory {
     }
 
     getAll(): number[] {
-        return Object.assign([], this.cells);
+        return Object.assign([], this.cells).filter((e)=>{return typeof e != typeof undefined});
     }
 }

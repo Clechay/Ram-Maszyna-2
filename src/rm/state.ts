@@ -13,4 +13,4 @@ export class State {
         this.mem = new Memmory();
         this.commandCounter = 0;
     }
-}
+}   

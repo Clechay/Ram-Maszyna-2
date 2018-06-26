@@ -6,6 +6,12 @@ export class Executor {
     name: string;
     handlers: Map <DataTokenType,(prev: State, arg: DataToken, firm: Firmware)=>State>;
 
+    static getAddr(label:string, firm:Firmware){
+        let id = firm.map.get(label);
+        if(typeof id === typeof undefined) throw 'unable to find label "'+label+'" in map '+firm.map;
+        return id;
+    }
+
     doable(argT: DataTokenType): boolean {
         return this.handlers.has(argT);
     }
@@ -150,15 +156,16 @@ executors.push(ex);
 // JUMP
 ex = new Executor("JUMP");
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
-    prev.commandCounter = firm.map.get(arg);
+    prev.commandCounter = Executor.getAddr(arg.value,firm);
     return prev;
 });
+executors.push(ex);
 
 // JZERO
 ex = new Executor("JZERO");
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
     if(prev.mem.get(0) === 0)
-        prev.commandCounter = firm.map.get(arg);
+        prev.commandCounter = Executor.getAddr(arg.value,firm);
     return prev;
 });
 executors.push(ex);
@@ -167,7 +174,7 @@ executors.push(ex);
 ex = new Executor("JGTZ");
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
     if(prev.mem.get(0) >= 0)
-        prev.commandCounter = firm.map.get(arg);
+        prev.commandCounter = Executor.getAddr(arg.value,firm);
     return prev;
 });
 executors.push(ex);
@@ -176,7 +183,7 @@ executors.push(ex);
 ex = new Executor("JLTZ");
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
     if(prev.mem.get(0) <= 0)
-        prev.commandCounter = firm.map.get(arg);
+        prev.commandCounter = Executor.getAddr(arg.value,firm);
     return prev;
 });
 executors.push(ex);
@@ -234,16 +241,17 @@ export class Engine {
 
     step(prev: State, firmware: Firmware): State {
         let cmd = Engine.nextCmd(prev,firmware);
+        console.error("counter: "+prev.commandCounter+", acc:"+prev.mem.cells[0]+", cmd:"+cmd.raw);
         let exe = this.executors.get(cmd.id);
         if (typeof exe !== 'undefined') {
             if(exe.doable(cmd.arg.type)){
                 exe.exec(prev, cmd.arg, firmware);
                 if(!Engine.halt(prev,firmware)) prev.commandCounter++;
             }
-            else throw 'unsupported command arg type';
+            else throw 'unsupported command arg type ' + cmd.arg;
         }
         else {
-            throw 'unsupported command id';
+            throw 'unsupported command id '+cmd.id;
         }
         return prev;
     }
@@ -251,7 +259,7 @@ export class Engine {
     execute(prev: State, firmware: Firmware): State {
         let c = 0;
         while(!Engine.halt(prev,firmware)) {
-            if(c > 20) break; c++;
+            if(c > 40) break; c++;
             prev = this.step(prev, firmware);
         }
         return prev;

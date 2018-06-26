@@ -23,12 +23,12 @@ export class Executor {
     }
 }
 
-let executors: Executor[];
+let executors: Executor[] = [];
 let ex = new Executor("TEST");
 ex.handlers.set(DataTokenType.NULL, (prev, arg) => {
     prev.mem.set(42,1337);
     return prev;});
-
+executors.push(ex);
 
 export class Engine {
     executors: Map<string, Executor>;
@@ -41,24 +41,36 @@ export class Engine {
     }
 
     step(prev: State, firmware: Firmware): State {
-        let cmd: Command = firmware.commands[prev.commandCounter];
+        console.error("cc: "+ prev.commandCounter)
+        let cmd = firmware.commands[prev.commandCounter];
+        console.error(cmd.commandId)
         let exe = this.executors.get(cmd.commandId);
         if (typeof exe !== 'undefined') {
             exe.exec(prev, cmd.arg);
         }
         else {
+            console.error(cmd.commandId)
+            console.error(exe)
             throw 'unsupported command id';
         }
         return prev;
     }
 
     execute(prev: State, firmware: Firmware): State {
-        while(firmware.commands[prev.commandCounter].commandId != "HALT")
-            prev = this.step(prev,firmware);
+        console.log(prev.commandCounter);
+        console.log(firmware.commands);
+        while(firmware.commands[prev.commandCounter].commandId != "HALT") {
+            prev = this.step(prev, firmware);
+            console.log(prev.commandCounter);
+            console.log(firmware.commands);
+        }
+        return prev;
     }
 
     debug(prev: State, firmware: Firmware, term: Terminator): State {
-        throw "not ready";
+        while(!term.check(Object.assign(Object,prev),firmware) && firmware.commands[prev.commandCounter].commandId != "HALT"){
+            this.step(prev,firmware);
+        }
         return prev;
     }
 }

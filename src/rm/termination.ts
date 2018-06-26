@@ -23,7 +23,9 @@ export class TerminateAtLine extends TerminationRule {
 
 export class Terminator {
     rules: TerminationRule[];
-
+    addRule(r : TerminationRule):void {
+        this.rules.push(r);
+    }
     check(state: State, firmware: Firmware): boolean {
         for (let r of this.rules) {
             if (r.check(state, firmware)) return true;

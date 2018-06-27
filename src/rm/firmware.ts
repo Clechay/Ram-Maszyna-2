@@ -93,6 +93,7 @@ export class Firmware {
 
     constructor(raw?: string) {
         // code
+        if (typeof raw === typeof undefined) raw = 'HALT';
         let lines = raw.split('\n');
         this.commands = lines.map(value => new Command(value));
         if (this.commands[this.commands.length - 1].id !== 'HALT')

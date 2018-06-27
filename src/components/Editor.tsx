@@ -8,6 +8,7 @@ import { State } from 'root/rm/state';
 import { Firmware } from 'root/rm/firmware';
 import { clone } from 'clone';
 import { Terminator } from 'root/rm/termination';
+import { Action } from 'utils/Action';
 
 const logo = require('assets/logo.svg');
 
@@ -35,15 +36,16 @@ export class Editor extends React.Component<object, object> {
         this.setState({rmDisplayedState: clone(this.rm.state)});
     }
 
-    update_code(nc : string): void {
+    update_code(nc: string): void {
         this.setState({rmDisplayedState: clone(this.rm.state)});
     }
+
     get_code(): string {
         return this.rm.firmware.text();
     }
 
-    ctrl_handler(e: React.FormEvent<HTMLInputElement>): void {
-        switch (e.currentTarget.name) {
+    ctrl_handler(e: Action): void {
+        switch (e.id) {
             case 'play':
                 this.rm.execute();
                 break;

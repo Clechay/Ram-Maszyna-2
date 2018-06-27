@@ -32,9 +32,12 @@ export class Editor extends React.Component<object, object> {
     //     let t = new Terminator()
     // }
     update_state(): void {
-        this.setState({rmDisplayedState: clone(this.rm.state_)});
+        this.setState({rmDisplayedState: clone(this.rm.state)});
     }
 
+    update_code(nc : string): void {
+        this.setState({rmDisplayedState: clone(this.rm.state)});
+    }
     get_code(): string {
         return this.rm.firmware.text();
     }

@@ -1,6 +1,6 @@
 import { Firmware, Command, DataTokenType, DataToken } from './firmware';
 
-let valid_cmds = [
+let validCmds = [
     'asa: AS 1333',
     'asa: AS ^1424',
     'asa: AS =1343',
@@ -12,7 +12,7 @@ let valid_cmds = [
     'AS .ser',
     'AS'
 ];
-let valid_cmds_info = [
+let validCmdsInfo = [
     {arg: ['1333'], id: ['AS'], label: ['asa'], raw: 'asa: AS 1333'},
     {arg: ['^1424'], id: ['AS'], label: ['asa'], raw: 'asa: AS ^1424'},
     {arg: ['=1343'], id: ['AS'], label: ['asa'], raw: 'asa: AS =1343'},
@@ -25,12 +25,12 @@ let valid_cmds_info = [
     {arg: null, id: ['AS'], label: null, raw: 'AS'},
 ];
 it('regex cmd validity', () => {
-    valid_cmds.forEach((e) => {
+    validCmds.forEach((e) => {
         expect(Command.checks.valid.test(e)).toBe(true);
     });
 });
 it('regex extraction', () => {
-    valid_cmds_info.forEach((e) => {
+    validCmdsInfo.forEach((e) => {
         expect(e.raw.match(Command.checks.label)).toEqual(e.label);
         expect(e.raw.match(Command.checks.argument)).toEqual(e.arg);
         expect(e.raw.match(Command.checks.id)).toEqual(e.id);
@@ -58,15 +58,14 @@ it('regex arg type', () => {
     expect(DataToken.checks.LABEL.test('.ser')).toBe(true);
 });
 
-let some_code = 'TEST\n// some happy comment\nHALT';
-let some_code_noHalt = 'TEST\n// some happy comment';
-
+let someCode = 'TEST\n// some happy comment\nHALT';
+let someCodeNoHalt = 'TEST\n// some happy comment';
 
 it('text from firmware', () => {
-    let fw = new Firmware(some_code);
-    expect(some_code).toEqual(fw.text());
+    let fw = new Firmware(someCode);
+    expect(someCode).toEqual(fw.text());
 });
 it('auto HALT addition', () => {
-    let fw = new Firmware(some_code_noHalt);
-    expect(some_code_noHalt + '\nHALT').toEqual(fw.text());
+    let fw = new Firmware(someCodeNoHalt);
+    expect(someCodeNoHalt + '\nHALT').toEqual(fw.text());
 });

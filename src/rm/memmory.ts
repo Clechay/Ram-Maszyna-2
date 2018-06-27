@@ -19,7 +19,7 @@ export class Memmory {
 
     getAll(): number[] {
         return Object.assign([], this.cells).filter((e) => {
-            return typeof e != typeof undefined;
+            return typeof e !== typeof undefined;
         });
     }
 }

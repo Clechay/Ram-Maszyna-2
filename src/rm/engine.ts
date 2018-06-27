@@ -127,7 +127,6 @@ ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
 });
 executors.push(ex);
 
-
 // LOAD
 ex = new Executor('LOAD');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
@@ -227,9 +226,7 @@ ex.handlers.set(DataTokenType.NULL, (prev, arg, firm) => {
 });
 executors.push(ex);
 
-
 export class Engine {
-    deb: any[];
     executors: Map<string, Executor>;
 
     static nextCmd(s: State, f: Firmware): Command {
@@ -241,7 +238,6 @@ export class Engine {
     }
 
     constructor() {
-        this.deb = [];
         this.executors = new Map<string, Executor>();
         executors.forEach((value, index, array) => {
             this.executors.set(value.name, value);
@@ -250,7 +246,6 @@ export class Engine {
 
     step(prev: State, firmware: Firmware): State {
         let cmd = Engine.nextCmd(prev, firmware);
-        this.deb.push('counter: ' + prev.commandCounter + ', acc:' + prev.mem.cells[0] + ', ac1:' + prev.mem.cells[1] + ', cmd:' + cmd.raw);
         let exe = this.executors.get(cmd.id);
         if (typeof exe !== 'undefined') {
             if (exe.doable(cmd.arg.type)) {
@@ -267,9 +262,7 @@ export class Engine {
 
     execute(prev: State, firmware: Firmware): State {
         let c = 0;
-        this.deb = [];
         while (!Engine.halt(prev, firmware)) {
-            if (c > 40) break;
             c++;
             prev = this.step(prev, firmware);
         }

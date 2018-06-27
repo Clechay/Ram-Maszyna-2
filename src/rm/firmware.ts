@@ -9,15 +9,15 @@ export enum DataTokenType {
 
 // argument class
 export class DataToken {
-    type: DataTokenType;
-    value: string | number | null;
-
     static checks = {
         NUMBER: /^=\d+$/,
         ADDRESS_TO_NUMBER: /^\d+$/,
         ADDRESS_TO_ADDRESS: /^\^\d+$/,
         LABEL: /^\.([a-z])\w*$/,
     };
+
+    type: DataTokenType;
+    value: string | number | null;
 
     constructor(raw: string) {
         this.value = raw;
@@ -46,16 +46,17 @@ export class DataToken {
 }
 
 export class Command {
-    raw: string;
-    label: string | null;
-    id: string;
-    arg: DataToken;
     static checks = {
         valid: /(([a-z])+:\s)?([A-Z])+(\s(\.([a-z])+|(([\^=])?\d+)))?/,
         label: /^([a-z])+(?=\:)/g,
         id: /[A-Z]+/g,
         argument: /\.([a-z])+|(([\^=])?\d+)/g,
     };
+
+    raw: string;
+    label: string | null;
+    id: string;
+    arg: DataToken;
 
     static validate_line(line: string): boolean {
         return Command.checks.valid.test(line);
@@ -99,7 +100,7 @@ export class Firmware {
         // labels
         this.map = new Map<string, number>();
         this.commands.forEach((value, index) => {
-            if (value.label != '') this.map.set(value.label, index);
+            if (value.label !== '') this.map.set(value.label, index);
         });
     }
 

@@ -35,6 +35,3 @@ it('integration', () => {
     expect(s.out.getEntire()).toEqual([6]);
     console.log(s);
 });
-
-
-

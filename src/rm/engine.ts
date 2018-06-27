@@ -4,11 +4,11 @@ import { Terminator } from './termination';
 
 export class Executor {
     name: string;
-    handlers: Map <DataTokenType,(prev: State, arg: DataToken, firm: Firmware)=>State>;
+    handlers: Map<DataTokenType, (prev: State, arg: DataToken, firm: Firmware) => State>;
 
-    static getAddr(label:string, firm:Firmware){
+    static getAddr(label: string, firm: Firmware) {
         let id = firm.map.get(label);
-        if(typeof id === typeof undefined) throw 'unable to find label "'+label+'" in map '+firm.map;
+        if (typeof id === typeof undefined) throw 'unable to find label "' + label + '" in map ' + firm.map;
         return id;
     }
 
@@ -25,7 +25,7 @@ export class Executor {
 
     constructor(name: string) {
         this.name = name;
-        this.handlers = new Map<DataTokenType, (prev: State, arg: DataToken)=>State>();
+        this.handlers = new Map<DataTokenType, (prev: State, arg: DataToken) => State>();
     }
 }
 
@@ -33,241 +33,252 @@ let executors: Executor[] = [];
 let ex;
 
 // TEST
-ex = new Executor("TEST");
+ex = new Executor('TEST');
 ex.handlers.set(DataTokenType.NULL, (prev, arg, firm) => {
-    prev.mem.set(42,1337);
-    return prev;});
+    prev.mem.set(42, 1337);
+    return prev;
+});
 executors.push(ex);
 
 // NOP
-ex = new Executor("NOP");
-ex.handlers.set(DataTokenType.NULL, (prev, arg, firm) => {return prev;});
+ex = new Executor('NOP');
+ex.handlers.set(DataTokenType.NULL, (prev, arg, firm) => {
+    return prev;
+});
 executors.push(ex);
 
 // ADD
-ex = new Executor("ADD");
+ex = new Executor('ADD');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)+arg);
+    prev.mem.set(0, prev.mem.get(0) + arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)+prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(0) + prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)+prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(0) + prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // SUB
-ex = new Executor("SUB");
+ex = new Executor('SUB');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)-arg);
+    prev.mem.set(0, prev.mem.get(0) - arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)-prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(0) - prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)-prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(0) - prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // MULT
-ex = new Executor("MULT");
+ex = new Executor('MULT');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)*arg);
+    prev.mem.set(0, prev.mem.get(0) * arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)*prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(0) * prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)*prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(0) * prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // DIV
-ex = new Executor("DIV");
+ex = new Executor('DIV');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)/arg);
+    prev.mem.set(0, prev.mem.get(0) / arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)/prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(0) / prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)/prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(0) / prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // MOD
-ex = new Executor("MOD");
+ex = new Executor('MOD');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)%arg);
+    prev.mem.set(0, prev.mem.get(0) % arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)%prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(0) % prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(0)%prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(0) % prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 
 // LOAD
-ex = new Executor("LOAD");
+ex = new Executor('LOAD');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,arg);
+    prev.mem.set(0, arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(arg));
+    prev.mem.set(0, prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(0,prev.mem.get(prev.mem.get(arg)));
+    prev.mem.set(0, prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // STORE
-ex = new Executor("STORE");
+ex = new Executor('STORE');
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(prev.mem.get(arg),prev.mem.get(0));
+    prev.mem.set(arg.value, prev.mem.get(0));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(prev.mem.get(prev.mem.get(arg)),prev.mem.get(0));
+    prev.mem.set(prev.mem.get(arg.value), prev.mem.get(0));
     return prev;
 });
 executors.push(ex);
 
 // JUMP
-ex = new Executor("JUMP");
+ex = new Executor('JUMP');
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
-    prev.commandCounter = Executor.getAddr(arg.value,firm);
+    prev.commandCounter = Executor.getAddr(arg.value, firm) - 1;
     return prev;
 });
 executors.push(ex);
 
 // JZERO
-ex = new Executor("JZERO");
+ex = new Executor('JZERO');
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
-    if(prev.mem.get(0) === 0)
-        prev.commandCounter = Executor.getAddr(arg.value,firm);
+    if (prev.mem.get(0) === 0)
+        prev.commandCounter = Executor.getAddr(arg.value, firm) - 1;
     return prev;
 });
 executors.push(ex);
 
 // JGTZ
-ex = new Executor("JGTZ");
+ex = new Executor('JGTZ');
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
-    if(prev.mem.get(0) >= 0)
-        prev.commandCounter = Executor.getAddr(arg.value,firm);
+    if (prev.mem.get(0) >= 0)
+        prev.commandCounter = Executor.getAddr(arg.value, firm) - 1;
     return prev;
 });
 executors.push(ex);
 
 // JLTZ
-ex = new Executor("JLTZ");
+ex = new Executor('JLTZ');
 ex.handlers.set(DataTokenType.LABEL, (prev, arg, firm) => {
-    if(prev.mem.get(0) <= 0)
-        prev.commandCounter = Executor.getAddr(arg.value,firm);
+    if (prev.mem.get(0) <= 0)
+        prev.commandCounter = Executor.getAddr(arg.value, firm) - 1;
     return prev;
 });
 executors.push(ex);
 
 // WRITE
-ex = new Executor("WRITE");
+ex = new Executor('WRITE');
 ex.handlers.set(DataTokenType.NUMBER, (prev, arg, firm) => {
-    prev.out.writeAndMove(arg);
+    prev.out.writeAndMove(arg.value);
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.out.writeAndMove(prev.mem.get(arg));
+    prev.out.writeAndMove(prev.mem.get(arg.value));
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.out.writeAndMove(prev.mem.get(prev.mem.get(arg)));
+    prev.out.writeAndMove(prev.mem.get(prev.mem.get(arg.value)));
     return prev;
 });
 executors.push(ex);
 
 // READ
-ex = new Executor("READ");
+ex = new Executor('READ');
 ex.handlers.set(DataTokenType.ADDRESS_TO_NUMBER, (prev, arg, firm) => {
-    prev.mem.set(arg,prev.in.readAndMove());
+    prev.mem.set(arg.value, prev.in.readAndMove());
     return prev;
 });
 ex.handlers.set(DataTokenType.ADDRESS_TO_ADDRESS, (prev, arg, firm) => {
-    prev.mem.set(prev.mem.get(arg),prev.in.readAndMove());
+    prev.mem.set(prev.mem.get(arg.value), prev.in.readAndMove());
     return prev;
 });
 executors.push(ex);
 
 // HALT
-ex = new Executor("HALT");
+ex = new Executor('HALT');
 ex.handlers.set(DataTokenType.NULL, (prev, arg, firm) => {
     prev.halted = true;
-    return prev;});
+    return prev;
+});
 executors.push(ex);
 
 
 export class Engine {
+    deb: any[];
     executors: Map<string, Executor>;
-    static nextCmd(s: State, f: Firmware):Command{
+
+    static nextCmd(s: State, f: Firmware): Command {
         return f.commands[s.commandCounter];
     }
-    static halt(s: State, f: Firmware):boolean{
+
+    static halt(s: State, f: Firmware): boolean {
         return s.halted;
     }
+
     constructor() {
+        this.deb = [];
         this.executors = new Map<string, Executor>();
         executors.forEach((value, index, array) => {
-            this.executors.set(value.name,value);
-        })
+            this.executors.set(value.name, value);
+        });
     }
 
     step(prev: State, firmware: Firmware): State {
-        let cmd = Engine.nextCmd(prev,firmware);
-        console.error("counter: "+prev.commandCounter+", acc:"+prev.mem.cells[0]+", cmd:"+cmd.raw);
+        let cmd = Engine.nextCmd(prev, firmware);
+        this.deb.push('counter: ' + prev.commandCounter + ', acc:' + prev.mem.cells[0] + ', ac1:' + prev.mem.cells[1] + ', cmd:' + cmd.raw);
         let exe = this.executors.get(cmd.id);
         if (typeof exe !== 'undefined') {
-            if(exe.doable(cmd.arg.type)){
+            if (exe.doable(cmd.arg.type)) {
                 exe.exec(prev, cmd.arg, firmware);
-                if(!Engine.halt(prev,firmware)) prev.commandCounter++;
+                if (!Engine.halt(prev, firmware)) prev.commandCounter++;
             }
             else throw 'unsupported command arg type ' + cmd.arg;
         }
         else {
-            throw 'unsupported command id '+cmd.id;
+            throw 'unsupported command id ' + cmd.id;
         }
         return prev;
     }
 
     execute(prev: State, firmware: Firmware): State {
         let c = 0;
-        while(!Engine.halt(prev,firmware)) {
-            if(c > 40) break; c++;
+        this.deb = [];
+        while (!Engine.halt(prev, firmware)) {
+            if (c > 40) break;
+            c++;
             prev = this.step(prev, firmware);
         }
         return prev;
     }
 
     debug(prev: State, firmware: Firmware, term: Terminator): State {
-        while(!term.check(Object.assign(Object,prev),firmware) && !Engine.halt(prev,firmware)){
-            this.step(prev,firmware);
+        while (!term.check(Object.assign(Object, prev), firmware) && !Engine.halt(prev, firmware)) {
+            this.step(prev, firmware);
         }
         return prev;
     }

@@ -1,7 +1,7 @@
 export class Memmory {
     cells: number[];
 
-    constructor(){
+    constructor() {
         this.cells = [];
     }
 
@@ -11,12 +11,15 @@ export class Memmory {
 
     get(id: number): number {
         if (typeof this.cells[id] === typeof undefined) {
-            throw 'getting from unused memmory';
+            // throw 'getting from unused memmory';
+            this.cells[id] = 0;
         }
         return this.cells[id];
     }
 
     getAll(): number[] {
-        return Object.assign([], this.cells).filter((e)=>{return typeof e != typeof undefined});
+        return Object.assign([], this.cells).filter((e) => {
+            return typeof e != typeof undefined;
+        });
     }
 }

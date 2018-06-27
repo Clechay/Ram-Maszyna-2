@@ -8,7 +8,7 @@ export class State {
     mem: Memmory;
     commandCounter: number;
 
-    constructor(input : number[]){
+    constructor(input: number[]) {
         this.halted = false;
         this.in = new InputRibbon(input);
         this.out = new OutputRibbon();

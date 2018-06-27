@@ -75,6 +75,6 @@ it('write is not supposed to change index', () => {
         val.forEach((sv, si, st) => {
             or.write(sv);
         });
-        expect([val[val.length-1]]).toEqual(or.getEntire());
+        expect([val[val.length - 1]]).toEqual(or.getEntire());
     });
 });

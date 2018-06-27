@@ -13,10 +13,10 @@ let arrs = [
 
 it('Memmory should store set values', () => {
     let m = new Memmory();
-    arrs.forEach((v,i,t)=>{
-        m.set(v[0],v[1]);
+    arrs.forEach((v, i, t) => {
+        m.set(v[0], v[1]);
     });
-    arrs.forEach((v,i,t)=>{
+    arrs.forEach((v, i, t) => {
         expect(m.get(v[0])).toBe(v[1]);
     });
 });

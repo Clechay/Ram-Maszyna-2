@@ -18,7 +18,7 @@ like types or imports.
 Around RM core there is a UI written in TSX with react. 
 React allows me to achieve easy to understand modular design with no compromises on extendability while taking care of rendering performance (to some degree of course).
 
-### RM architecture
+### RM architecture and implementation
 
 RM consists of following classes
 * Ribbon - abstract class for RibbonIn and RibbonOut to inherit from
@@ -41,7 +41,8 @@ RM consists of following classes
     * Engine 
         * Map <cmdID, Executor> - object responsible for executing a command
 
-## Implementation
+![uml](./doc/uml.png)
+![file_dependemcies](./doc/file_dependencies.png)
 
 ## Shortcomings and mistakes
 

@@ -1,17 +1,31 @@
 import * as React from 'react';
+import { Action } from 'utils/Action';
 
 export interface Props {
-    handler: (e: Event, d?: object) => void;
-    text: string;
+    elems: number[];
+}
+
+export interface PropsElem {
+    el: number | string;
+}
+
+class Elem extends React.Component<PropsElem, object> {
+    render() {
+        const {el} = this.props;
+        return <li>{el}</li>;
+    }
 }
 
 export class Input extends React.Component<Props, object> {
     render() {
-        const {handler} = this.props;
+        const {elems} = this.props;
 
         return (
-            <div className="code">
-                <textarea className="source_code">text</textarea>
+            <div className="ribbon ribbonOut">
+                <ul>
+                    <li className="header">out:</li>
+                    {elems.map((e, index) => <Elem el={e} key={index}/>)}
+                </ul>
             </div>
         );
     }

@@ -15,23 +15,6 @@ const logo = require('assets/logo.svg');
 export class Editor extends React.Component<object, object> {
     rm: RM;
 
-    constructor(props) {
-        super(props);
-        this.rm = new RM(undefined, undefined, undefined);
-        this.state = {
-            code: 'HALT',
-            input: [],
-            output: [],
-            rmDisplayedState: State
-        };
-        this.update_state.bind(this);
-        this.get_code.bind(this);
-        this.ctrl_handler.bind(this);
-    }
-
-    // buildTerm():Terminator{
-    //     let t = new Terminator()
-    // }
     update_state(): void {
         this.setState({rmDisplayedState: clone(this.rm.state)});
     }
@@ -45,6 +28,7 @@ export class Editor extends React.Component<object, object> {
     }
 
     ctrl_handler(e: Action): void {
+        console.log(this);
         switch (e.id) {
             case 'play':
                 this.rm.execute();
@@ -61,10 +45,26 @@ export class Editor extends React.Component<object, object> {
         }
     }
 
+    constructor(props) {
+        super(props);
+        this.rm = new RM(undefined, undefined, undefined);
+        this.state = {
+            code: 'HALT',
+            input: [],
+            output: [],
+            rmDisplayedState: State
+        };
+        this.update_state.bind(this);
+        this.update_code.bind(this);
+        this.get_code.bind(this);
+        this.ctrl_handler.bind(this);
+    }
+
     render() {
+        this.ctrl_handler(new Action('ojej'));
         return (
             <div className="App">
-                <Control handler={this.ctrl_handler}/>
+                <Control handler={(e: Action) => this.ctrl_handler(e)}/>
                 <Code handler={(e) => undefined} text={this.get_code()}/>
             </div>
         );

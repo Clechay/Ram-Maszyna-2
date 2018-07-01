@@ -20,9 +20,11 @@ React allows me to achieve easy to understand modular design with no compromises
 
 ### RM architecture and implementation
 
-RM <=> React.js UI
+##### RM <=> React.js UI
 
-RM consists of following classes
+React.js UI wraps Ram Machine class instance. 
+
+##### RM consists of following classes
 * Ribbon - abstract class for RibbonIn and RibbonOut to inherit from
 * Terminator
     * TerminationRule[] - for specific rules to inherit from
@@ -43,9 +45,12 @@ RM consists of following classes
     * Engine 
         * Map <cmdID, Executor> - object responsible for executing a command
 
+##### classes dependencies and relationships
 ![uml](./doc/uml.png)
-![file_dependemcies](./doc/file_dependencies.png)
+##### internal structure of the Engine
 ![engine_internal](./doc/engine_internal.png)
+##### filesystem structure and dependencies between files
+![file_dependemcies](./doc/file_dependencies.png)
 
 
 #### Ribbon

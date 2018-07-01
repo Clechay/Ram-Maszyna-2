@@ -20,6 +20,8 @@ React allows me to achieve easy to understand modular design with no compromises
 
 ### RM architecture and implementation
 
+RM <=> React.js UI
+
 RM consists of following classes
 * Ribbon - abstract class for RibbonIn and RibbonOut to inherit from
 * Terminator
@@ -43,6 +45,129 @@ RM consists of following classes
 
 ![uml](./doc/uml.png)
 ![file_dependemcies](./doc/file_dependencies.png)
+![engine_internal](./doc/engine_internal.png)
+
+
+#### Ribbon
+
+An abstract class responsible for providing properties common for RibbonIn and RibbonOut.
+
+* protected dataSequence: number[];
+    * stores frames for payload in order 
+* protected nextId: number;
+    * stores id of next frame to be read from / written into
+* move(): void
+    * moves id to latter frame (by one) 
+* getPrevious(): number[]
+    * payloads form frames behind counter
+    * useless for RM, to be used in UI
+* getCurrent(): number
+    * payload form frame corresponding to the counter
+* getFollowing(): number[]
+    * payloads form frames ahead of counter
+    * useless for RM, to be used in UI
+* getEntire(): number[]
+    * all the payloads in order
+
+#### InputRibbon (extends Ribbon)
+
+Class responsible for storing and processing RM's Input Ribbon 
+
+* read(): number
+    * payload form frame corresponding to the counter
+    * effectively alias for getCurrent()
+* readAndMove(): number
+    * executes read() and then move()
+
+#### OutputRibbon (extends Ribbon)
+
+Class responsible for storing and processing RM's Output Ribbon 
+
+* write(val: number): void
+    * sets payload in frame corresponding to the counter
+* writeAndMove(val: number): void
+    * executes write() and then move()
+
+#### Memmory
+* cells: number[]
+* set(id: number, value: number): void
+* get(id: number): number
+* getAll(): number[]
+
+#### State
+* halted: boolean
+* in: InputRibbon
+* out: OutputRibbon
+* mem: Memmory
+* commandCounter: number
+
+#### DataTokenType < Enumerable >
+* NUMBER
+* ADDRESS_TO_NUMBER
+* ADDRESS_TO_ADDRESS
+* LABEL
+* NULL
+
+#### DataToken
+* static checks
+    * NUMBER: /^=\d+$/
+    * ADDRESS_TO_NUMBER: /^\d+$/
+    * ADDRESS_TO_ADDRESS: /^\^\d+$/
+    * LABEL: /^\.([a-z])\w*$/
+* type: DataTokenType
+* value: string | number | null
+
+#### Command
+* static checks
+    * valid: /(([a-z])+:\s)?([A-Z])+(\s(\.([a-z])+|(([\^=])?\d+)))?/
+    * label: /^([a-z])+(?=\:)/g
+    * id: /[A-Z]+/g
+    * argument: /\.([a-z])+|(([\^=])?\d+)/g
+* raw: string
+* label: string | null
+* id: string
+* arg: DataToken
+* static validate_line(line: string): boolean
+
+#### Firmware
+* map: Map<string, number>
+* commands: Command[]
+* text(): string 
+
+#### Executor
+* name: string
+* handlers: Map<DataTokenType, (prev: State, arg: DataToken, firm: Firmware) => State>
+* static getAddr(label: string, firm: Firmware): number
+* doable(argT: DataTokenType): boolean
+* exec(prev: State, arg: DataToken, firm: Firmware): State
+
+#### Engine
+* executors: Map<string, Executor>
+* static nextCmd(s: State, f: Firmware): Command
+* static halt(s: State, f: Firmware): boolean
+* step(prev: State, firmware: Firmware): State
+* execute(prev: State, firmware: Firmware): State
+* debug(prev: State, firmware: Firmware, term: Terminator): State
+
+#### RM
+* engine: Engine
+* firmware: Firmware
+* state: State
+* execute(): State
+* debug(term: Terminator): State 
+* step(): State
+
+#### TerminationRule
+* check(state: State, firmware: Firmware): boolean
+
+#### TerminateAtLine extends TerminationRule
+* nr: number
+* check(state: State, firmware: Firmware): boolean
+
+#### Terminator
+* rules: TerminationRule[]
+* addRule(r: TerminationRule): void 
+* check(state: State, firmware: Firmware): boolean
 
 ## Shortcomings and mistakes
 

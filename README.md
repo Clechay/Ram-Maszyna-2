@@ -120,23 +120,23 @@ Class responsible for storing and processing RM's Output Ribbon
 
 #### DataToken
 * static checks
-    * NUMBER: /^=\d+$/
-        * eg. =1
-    * ADDRESS_TO_NUMBER: /^\d+$/
-        * eg. 1
-    * ADDRESS_TO_ADDRESS: /^\^\d+$/
-        * eg. ^1
-    * LABEL: /^\.([a-z])\w*$/
-        * eg. .foo
+    * NUMBER: ```/^=\d+$/```
+        * eg. ```=1```
+    * ADDRESS_TO_NUMBER: ```/^\d+$/```
+        * eg. ```1```
+    * ADDRESS_TO_ADDRESS: ```/^\^\d+$/```
+        * eg. ```^1```
+    * LABEL: ```/^\.([a-z])\w*$/```
+        * eg. ```.foo```
 * type: DataTokenType
 * value: string | number | null
 
 #### Command
 * static checks
-    * valid: /(([a-z])+:\s)?([A-Z])+(\s(\.([a-z])+|(([\^=])?\d+)))?/
-    * label: /^([a-z])+(?=\:)/g
-    * id: /[A-Z]+/g
-    * argument: /\.([a-z])+|(([\^=])?\d+)/g
+    * valid: ```/(([a-z])+:\s)?([A-Z])+(\s(\.([a-z])+|(([\^=])?\d+)))?/```
+    * label: ```/^([a-z])+(?=\:)/g```
+    * id: ```/[A-Z]+/g```
+    * argument: ```/\.([a-z])+|(([\^=])?\d+)/g```
 * raw: string
 * label: string | null
 * id: string

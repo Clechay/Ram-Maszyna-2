@@ -108,17 +108,26 @@ Class responsible for storing and processing RM's Output Ribbon
 
 #### DataTokenType < Enumerable >
 * NUMBER
+    * eg. =1
 * ADDRESS_TO_NUMBER
+    * eg. 1
 * ADDRESS_TO_ADDRESS
+    * eg. ^1
 * LABEL
+    * eg. .foo
 * NULL
+    * no arg
 
 #### DataToken
 * static checks
     * NUMBER: /^=\d+$/
+        * eg. =1
     * ADDRESS_TO_NUMBER: /^\d+$/
+        * eg. 1
     * ADDRESS_TO_ADDRESS: /^\^\d+$/
+        * eg. ^1
     * LABEL: /^\.([a-z])\w*$/
+        * eg. .foo
 * type: DataTokenType
 * value: string | number | null
 
